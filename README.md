@@ -1,6 +1,6 @@
 # ubuntu-dev
 
-Ubuntu 22.04 dev container with sudo, vim, git, curl, wget, build-essential.
+Ubuntu 22.04 dev container with sudo, vim, git, curl, wget, build-essential, gdb, llvm, clang, clangd, cmake, openssh-server.
 
 ## Build
 
@@ -11,16 +11,25 @@ It is automatically copied during build via the `COPY sources.list /etc/apt/sour
 docker build -t ubuntu-dev .
 ```
 
-## Rebuild & Restart
+## Run (Linux)
 
 ```bash
-docker build -t ubuntu-dev . && docker stop dev && docker rm dev && docker run -d --name dev -v "C:\Users\taishan\localcode:/home/taishan/localcode" ubuntu-dev:latest
+docker run -d --name dev \
+  -v ~/code:/home/taishan/workspace/code \
+  -p 2222-2252:22 \
+  ubuntu-dev:latest
 ```
 
-## Run
+## Run (Windows)
 
 ```bash
-docker run -d --name dev -v "C:\Users\taishan\localcode:/home/taishan/localcode" ubuntu-dev:latest
+docker run -d --name dev -v "C:\Users\taishan\localcode:/home/taishan/workspace/code" -p 2222-2252:22 ubuntu-dev:latest
+```
+
+## Rebuild & Restart (Linux)
+
+```bash
+docker build -t ubuntu-dev . && docker stop dev && docker rm dev && docker run -d --name dev -v ~/code:/home/taishan/workspace/code -p 2222-2252:22 ubuntu-dev:latest
 ```
 
 ## Enter the container
@@ -28,6 +37,14 @@ docker run -d --name dev -v "C:\Users\taishan\localcode:/home/taishan/localcode"
 ```bash
 docker exec -it dev bash
 ```
+
+## SSH
+
+```bash
+ssh -p 2222 taishan@localhost
+```
+
+Docker picks the first available port in 2222-2252 if 2222 is already in use.
 
 ## Stop / Remove
 
@@ -37,5 +54,5 @@ docker stop dev && docker rm dev
 
 ## Notes
 
-- `C:\Users\taishan\localcode` is mounted to `/home/taishan/localcode` inside the container.
 - Default user: `taishan` (password: `taishan`, passwordless sudo).
+- SSH server runs on port 22 inside the container.
